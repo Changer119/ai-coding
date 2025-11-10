@@ -40,8 +40,10 @@ class HistoryAPI:
             data = response.json()
 
             # 解析指定日期的数据
-            if month_str in data and str(day) in data[month_str]:
-                events_data = data[month_str][str(day)]
+            # API返回的日期键格式是 "MMDD"（如 "1130" 表示11月30日）
+            day_key = f"{month:02d}{day:02d}"
+            if month_str in data and day_key in data[month_str]:
+                events_data = data[month_str][day_key]
                 return self._process_events(events_data)
             else:
                 return []

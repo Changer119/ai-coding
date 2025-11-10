@@ -112,8 +112,10 @@ def internal_error(error):
 
 if __name__ == '__main__':
     # 开发环境配置
+    import os
+    port = int(os.environ.get('PORT', 5001))  # 默认使用5001端口
     app.run(
         host='0.0.0.0',
-        port=5000,
+        port=port,
         debug=True
     )
