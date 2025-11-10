@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史上的今天</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部区域 -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    历史上的今天
+                </h1>
+                <p class="app-subtitle">探索过去的今天，那些改变世界的故事</p>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 日期选择器区域 -->
+            <section class="date-selector-section">
+                <div class="date-selector-card">
+                    <div class="selector-header">
+                        <i class="fas fa-clock"></i>
+                        <h2>选择日期</h2>
+                    </div>
+                    <div class="date-input-wrapper">
+                        <input type="date" id="dateInput" class="date-input">
+                        <button id="todayBtn" class="today-btn">
+                            <i class="fas fa-calendar-day"></i>
+                            今天
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 当前日期显示 -->
+            <div class="current-date-display">
+                <i class="fas fa-calendar-check"></i>
+                <span id="currentDate">{{ current_date }}</span>
+            </div>
+
+            <!-- 事件展示区域 -->
+            <section class="events-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-scroll"></i>
+                        重要历史事件
+                    </h2>
+                    <div class="loading-indicator" id="loadingIndicator">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        加载中...
+                    </div>
+                </div>
+
+                <!-- 事件列表 -->
+                <div class="events-container" id="eventsContainer">
+                    {% if events %}
+                        {% for event in events %}
+                        <div class="event-card">
+                            <div class="event-year">
+                                {{ event.year }}年
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">{{ event.title }}</h3>
+                                {% if event.desc %}
+                                <p class="event-desc">{{ event.desc }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <p>请选择日期查看历史事件</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </main>
+
+        <!-- 错误提示 -->
+        <div class="error-toast" id="errorToast">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorMessage"></span>
+        </div>
+    </div>
+
+    <script>
+        // 初始化数据
+        window.initialEvents = {{ events | tojson | safe }};
+
+        // 获取当前日期
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 格式化日期显示
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            return `${month}月${day}日`;
+        }
+
+        // 更新页面上的当前日期显示
+        document.getElementById('currentDate').textContent = formatDate(getCurrentDate());
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
